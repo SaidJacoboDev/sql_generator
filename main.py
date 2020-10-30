@@ -27,14 +27,14 @@ if __name__ == '__main__':
                                                                                         policy_range=policy_range,
                                                                                         person_range=person_range,
                                                                                         producer_range=producer_range,
-                                                                                        certificate_range = 1000,
                                                                                         coverage_range=20,
                                                                                         receipt_range=1000)
 
     siniesters = load_siniester_database(siniester_range=200, 
                                          policies=policies, 
                                          cities=cities, 
-                                         persons=persons)
+                                         persons=persons,
+                                         certificates=certificates)
 
 
     print('Ok :)')

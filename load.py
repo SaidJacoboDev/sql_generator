@@ -13,6 +13,8 @@ from policy_database.certificate import Certificate
 from policy_database.coverage import Coverage
 from policy_database.receipt import Receipt
 from siniester_database.siniester import Siniester
+from siniester_database.siniester_detail import SiniesterDetail
+
 
 random.seed(42)
 
@@ -102,7 +104,7 @@ def load_person_database(province_range, city_range, person_range, organization_
 
 
 def load_policy_database(ramo_range, product_range, policy_range, person_range, producer_range,
-                        certificate_range, coverage_range, receipt_range):
+                         coverage_range, receipt_range):
 
     ramos = []
     products = []
@@ -191,16 +193,16 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
     f.close()
 
     f = open("./data/policies/certificados.txt", "w+")  
-    for c in range(0, certificate_range+1):
-
+    
+    c = -1
+    for policy in policies:
+        c += 1
         certificate = Certificate()
         
         certificate.id = c
-
-        random_policy = random.choice(policies)
-        certificate.policy_id = random_policy.id 
-        certificate.product_id = random_policy.product_id
-        certificate.ramo_id = random_policy.ramo_id
+        certificate.policy_id = policy.id 
+        certificate.product_id = policy.product_id
+        certificate.ramo_id = policy.ramo_id
         
         random_coverage = random.choice(coverages)
         certificate.coverage_id = random_coverage.id
@@ -246,7 +248,7 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
     
 
-def load_siniester_database(siniester_range, policies, cities, persons):
+def load_siniester_database(siniester_range, policies, cities, persons, certificates):
 
     siniesters = []
 
@@ -285,12 +287,38 @@ def load_siniester_database(siniester_range, policies, cities, persons):
                                                                                 siniester.person_id))                                                                                    
     f.close()
 
+    siniester_details = []
+    f = open("./data/siniesters/detalle_siniestros.txt", "w+")  
+    for s in siniesters:
+
+        siniester_detail = SiniesterDetail()
+
+        certificate = [c for c in certificates if c.policy_id == s.policy_id 
+                                                and c.product_id == s.product_id 
+                                                and c.ramo_id == s.ramo_id].pop()
+
+        siniester_detail.policy_id = certificate.policy_id
+        siniester_detail.ramo_id = certificate.ramo_id
+        siniester_detail.product_id = certificate.product_id
         
+        siniester_detail.certify_id = certificate.id
+        siniester_detail.description = 'Descripcion del siniestro nro {}'.format(s.id)
+        siniester_detail.amount = random.randint(5000, 20000)
+
+        siniester_details.append(siniester_detail)
+
+        f.write("Insert into detalle_siniestro values({}, {}, {}, {}, {}, {}) ;\n".format(siniester_detail.policy_id,
+                                                                                          siniester_detail.ramo_id,
+                                                                                          siniester_detail.product_id,
+                                                                                          siniester_detail.certify_id,
+                                                                                          siniester_detail.description,
+                                                                                          siniester_detail.amount))                                                                                    
+    f.close()   
         
-    return siniesters
+    return siniesters, siniester_details
 
 
 
 
 
-
+SiniesterDetail
