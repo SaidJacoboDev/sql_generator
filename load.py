@@ -18,40 +18,41 @@ from siniester_database.siniester_detail import SiniesterDetail
 
 random.seed(42)
 
+def save(path, text):
+    with open(path, "w+") as f:
+        f.write(text)
+
 def load_person_database(province_range, city_range, person_range, organization_range, producer_range):
     provinces = []
     cities = []
     persons = []
     organizations = []
     producers = []
-  
-    f = open("./data/persons/provincias.txt", "w+")
+    
+    #Provincias
+    text = ''
     for p in range(0, province_range+1):
-
         province = Province(p, "Provincia {}".format(p))
         provinces.append(province)
+        text += "Insert into provincias values({}, '{}'); \n".format(province.id, province.name)
 
-        f.write("Insert into provincias values({}, '{}'); \n".format(province.id, province.name))
+    save("./data/persons/provincias.txt", text)
 
-    f.close()
-
-    
-    f = open("./data/persons/ciudades.txt", "w+")
+    #Ciudades
+    text = ''
     for c in range(0, city_range+1):
-
         city = City()
-
         city.id = c
         city.name = "Ciudad {}".format(c)
         city.province_id = random.randint(0, province_range)
-
         cities.append(city)
 
-        f.write("Insert into ciudades values({}, '{}', {}) ;\n".format(city.id, city.name, city.province_id))
-    f.close()
+        text += "Insert into ciudades values({}, '{}', {}) ;\n".format(city.id, city.name, city.province_id)
 
+    save("./data/persons/ciudades.txt", text)
 
-    f = open("./data/persons/personas.txt", "w+")
+    #Personas
+    text = ''
     for p in range(0, person_range+1):
         person = Person()
         person.id = p
@@ -63,16 +64,17 @@ def load_person_database(province_range, city_range, person_range, organization_
 
         persons.append(person)
 
-        f.write("Insert into Personas values({}, {}, '{}', '{}', {}, '{}') ;\n".format(person.id, 
-                                                                                person.dni, 
-                                                                                person.name, 
-                                                                                person.address, 
-                                                                                person.city_id, 
-                                                                                person.birthdate))
-        
-    f.close()
+        text += "Insert into Personas values({}, {}, '{}', '{}', {}, '{}') ;\n".format(person.id, 
+                                                                                       person.dni, 
+                                                                                       person.name, 
+                                                                                       person.address, 
+                                                                                       person.city_id, 
+                                                                                       person.birthdate)
+                
+    save("./data/persons/personas.txt", text)
 
-    f = open("./data/persons/organizaciones.txt", "w+")
+    #Organizaciones
+    text = ''
     for o in range(0, organization_range+1):
         organization = Organization()
 
@@ -83,21 +85,23 @@ def load_person_database(province_range, city_range, person_range, organization_
 
         organizations.append(organization)
 
-        f.write("Insert into Organizador values({},'{}','{}',{}) ;\n".format(organization.id,
-                                                                        organization.name,
-                                                                        organization.address,
-                                                                        organization.city_id))
-    f.close()
+        text += "Insert into Organizador values({},'{}','{}',{}) ;\n".format(organization.id,
+                                                                              organization.name,
+                                                                              organization.address,
+                                                                              organization.city_id)
+    
+    save("./data/persons/organizaciones.txt", text)
 
-
-    f = open("./data/persons/productores.txt", "w+")
+    #Productores
+    text = ''
     for p in range(0, producer_range + 1):
 
         producer = Producer(p, random.randint(0, organization_range));
         producers.append(producer)
 
-        f.write("Insert into Productor values({}, {}) ;\n".format(producer.person_id, producer.organization_id))
-    f.close()
+        text += "Insert into Productor values({}, {}) ;\n".format(producer.person_id, producer.organization_id)
+    
+    save("./data/persons/productores.txt",text)
 
     return provinces, cities, persons, organizations, producers
 
