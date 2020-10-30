@@ -32,11 +32,11 @@ if __name__ == '__main__':
     #----------------
     #   Siniesters DB
     #----------------
-    # siniesters = load_siniester_database(siniester_range=200, 
-    #                                      policies=policies, 
-    #                                      cities=cities, 
-    #                                      persons=persons,
-    #                                      certificates=certificates)
+    siniesters = load_siniester_database(siniester_range=200, 
+                                         policies=policies, 
+                                         cities=cities, 
+                                         persons=persons,
+                                         certificates=certificates)
 
 
     print('Ok :)')

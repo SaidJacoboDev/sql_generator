@@ -254,7 +254,7 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
 
     siniesters = []
 
-    f = open("./data/siniesters/siniestros.txt", "w+")  
+    text = ''
     for s in range(0, siniester_range+1):
 
         siniester = Siniester()
@@ -279,18 +279,18 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
 
         siniesters.append(siniester)
 
-        f.write("Insert into siniestros values({}, {}, {}, {}, {}) ;\n".format(siniester.id,
-                                                                                siniester.policy_id,
-                                                                                siniester.ramo_id,
-                                                                                siniester.product_id,
-                                                                                siniester.date,
-                                                                                siniester.address,
-                                                                                siniester.city_id,
-                                                                                siniester.person_id))                                                                                    
-    f.close()
+        text += "Insert into siniestros values({}, {}, {}, {}, {}) ;\n".format(siniester.id,
+                                                                               siniester.policy_id,
+                                                                               siniester.ramo_id,
+                                                                               siniester.product_id,
+                                                                               siniester.date,
+                                                                               siniester.address,
+                                                                               siniester.city_id,
+                                                                               siniester.person_id)
+    save("./data/siniesters/siniestros.txt", text)  
 
     siniester_details = []
-    f = open("./data/siniesters/detalle_siniestros.txt", "w+")  
+    text = ''
     for s in siniesters:
 
         siniester_detail = SiniesterDetail()
@@ -309,13 +309,13 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
 
         siniester_details.append(siniester_detail)
 
-        f.write("Insert into detalle_siniestro values({}, {}, {}, {}, {}, {}) ;\n".format(siniester_detail.policy_id,
+        text += "Insert into detalle_siniestro values({}, {}, {}, {}, {}, {}) ;\n".format(siniester_detail.policy_id,
                                                                                           siniester_detail.ramo_id,
                                                                                           siniester_detail.product_id,
                                                                                           siniester_detail.certify_id,
                                                                                           siniester_detail.description,
-                                                                                          siniester_detail.amount))                                                                                    
-    f.close()   
+                                                                                          siniester_detail.amount)
+    save("./data/siniesters/detalle_siniestros.txt", text)  
         
     return siniesters, siniester_details
 
