@@ -117,17 +117,17 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
     coverages = []
     receipts = []
 
-    f = open("./data/policies/ramos.txt", "w+")
+    text = ''
     for r in range(0, ramo_range+1):
         ramo = Ramo(r, "Ramo {}".format(r))
 
         ramos.append(ramo)
 
-        f.write("Insert into Ramo values({}, '{}') ;\n".format(ramo.id, ramo.description))
+        text += "Insert into Ramo values({}, '{}') ;\n".format(ramo.id, ramo.description)
 
-    f.close()
-
-    f = open("./data/policies/products.txt", "w+")
+    save("./data/policies/ramos.txt", text)
+    
+    text = ''
     for p in range(0, product_range+1):
 
         product = Product()
@@ -137,13 +137,12 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
         products.append(product)
 
-        f.write("Insert into Producto values({}, {}, '{}') ;\n".format(product.ramo_id, 
-                                                                        product.id, 
-                                                                        product.description))
+        text += "Insert into Producto values({}, {}, '{}') ;\n".format(product.ramo_id, 
+                                                                               product.id, 
+                                                                               product.description)
+    save("./data/policies/products.txt", text)
 
-    f.close()
-
-    f = open("./data/policies/coverturas.txt", "w+")  
+    text = ''
     for c in range(0, coverage_range+1):
 
         coverage = Coverage()
@@ -160,15 +159,15 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
         coverages.append(coverage)
 
-        f.write("Insert into cobertura values({}, {}, {}, '{}', {}, {}) ;\n".format(coverage.id,
+        text += "Insert into cobertura values({}, {}, {}, '{}', {}, {}) ;\n".format(coverage.id,
                                                                                     coverage.ramo_id,
                                                                                     coverage.product_id,
                                                                                     coverage.description,
                                                                                     coverage.min_sum,
-                                                                                    coverage.max_sum))                                                                                    
-    f.close()
+                                                                                    coverage.max_sum)                                                                                 
+    save("./data/policies/coverturas.txt", text)  
 
-    f = open("./data/policies/policies.txt", "w+")
+    text = ''
     for p in range(0, policy_range+1):
 
         policy = Policy()
@@ -187,22 +186,20 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
         policies.append(policy)
 
-        f.write("Insert into poliza values({}, {}, {}, {}, {}, '{}', '{}') ;\n".format(policy.id, 
+        text += "Insert into poliza values({}, {}, {}, {}, {}, '{}', '{}') ;\n".format(policy.id, 
                                                                                        policy.ramo_id, 
                                                                                        policy.product_id,
                                                                                        policy.person_id,
                                                                                        policy.producer_id,
                                                                                        policy.start_date,
-                                                                                       policy.end_date))
-    f.close()
+                                                                                       policy.end_date)
+    save("./data/policies/policies.txt", text)
 
-    f = open("./data/policies/certificados.txt", "w+")  
-    
+    text = ''
     c = -1
     for policy in policies:
         c += 1
         certificate = Certificate()
-        
         certificate.id = c
         certificate.policy_id = policy.id 
         certificate.product_id = policy.product_id
@@ -216,16 +213,17 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
         certificates.append(certificate)
 
-        f.write("Insert into certificados values({}, {}, {}, {}, {}, '{}') ;\n".format(certificate.policy_id,
+        text += "Insert into certificados values({}, {}, {}, {}, {}, '{}') ;\n".format(certificate.policy_id,
                                                                                        certificate.ramo_id,
                                                                                        certificate.product_id,
                                                                                        certificate.id,
                                                                                        certificate.coverage_id,
                                                                                        certificate.sum_assured,
-                                                                                       certificate.description))                                                                                    
-    f.close()
+                                                                                       certificate.description)                                                                                 
+    save("./data/policies/certificados.txt", text)  
 
-    f = open("./data/policies/recibos.txt", "w+")  
+
+    text = ''
     for c in range(0, receipt_range+1):
 
         receipt = Receipt()
@@ -241,12 +239,12 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
 
         receipts.append(receipt)
 
-        f.write("Insert into Recibos values({}, {}, {}, {}, {}) ;\n".format(receipt.id,
-                                                                            receipt.policy_id,
-                                                                            receipt.ramo_id,
-                                                                            receipt.product_id,
-                                                                            receipt.amount))                                                                                    
-    f.close()
+        text +="Insert into Recibos values({}, {}, {}, {}, {}) ;\n".format(receipt.id,
+                                                                           receipt.policy_id,
+                                                                           receipt.ramo_id,
+                                                                           receipt.product_id,
+                                                                           receipt.amount)                                                                                   
+    save("./data/policies/recibos.txt", text)  
 
     return ramos, products, policies, certificates, coverages, receipts
 
