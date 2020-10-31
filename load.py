@@ -14,7 +14,7 @@ from policy_database.coverage import Coverage
 from policy_database.receipt import Receipt
 from siniester_database.siniester import Siniester
 from siniester_database.siniester_detail import SiniesterDetail
-
+from siniester_database.siniester_attached import SiniesterAttached
 
 random.seed(42)
 
@@ -279,14 +279,13 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
 
         siniesters.append(siniester)
 
-        text += "Insert into siniestros values({}, {}, {}, {}, {}) ;\n".format(siniester.id,
-                                                                               siniester.policy_id,
-                                                                               siniester.ramo_id,
-                                                                               siniester.product_id,
-                                                                               siniester.date,
-                                                                               siniester.address,
-                                                                               siniester.city_id,
-                                                                               siniester.person_id)
+        text += "Insert into siniestros values({}, {}, {}, {}, '{}', '{}', {}) ;\n".format(siniester.id,
+                                                                                             siniester.policy_id,
+                                                                                             siniester.ramo_id,
+                                                                                             siniester.product_id,
+                                                                                             siniester.date,
+                                                                                             siniester.address,
+                                                                                             siniester.person_id)
     save("./data/siniesters/siniestros.txt", text)  
 
     siniester_details = []
@@ -294,6 +293,7 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
     for s in siniesters:
 
         siniester_detail = SiniesterDetail()
+        siniester_detail.siniester_id = s.id
 
         certificate = [c for c in certificates if c.policy_id == s.policy_id 
                                                 and c.product_id == s.product_id 
@@ -309,18 +309,42 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
 
         siniester_details.append(siniester_detail)
 
-        text += "Insert into detalle_siniestro values({}, {}, {}, {}, {}, {}) ;\n".format(siniester_detail.policy_id,
-                                                                                          siniester_detail.ramo_id,
-                                                                                          siniester_detail.product_id,
-                                                                                          siniester_detail.certify_id,
-                                                                                          siniester_detail.description,
-                                                                                          siniester_detail.amount)
+        text += "Insert into DetalleSiniestro values({}, {}, {}, {}, {}, '{}', {}) ;\n".format(siniester_detail.siniester_id,
+                                                                                              siniester_detail.policy_id,
+                                                                                              siniester_detail.ramo_id,
+                                                                                              siniester_detail.product_id,
+                                                                                              siniester_detail.certify_id,
+                                                                                              siniester_detail.description,
+                                                                                              siniester_detail.amount)
     save("./data/siniesters/detalle_siniestros.txt", text)  
         
-    return siniesters, siniester_details
+    siniester_attacheds = []
+    text = ''
+    n = -1
+    for s in siniesters:
 
+        n += 1
+        siniester_attached = SiniesterAttached()
 
+        siniester_attached.siniester_id = s.id
+        siniester_attached.policy_id = s.policy_id
+        siniester_attached.ramo_id = s.ramo_id
+        siniester_attached.product_id = s.product_id
+        siniester_attached.id = n
 
+        siniester_attached.document = 'Documento {}'.format(n)
 
+        siniester_attacheds.append(siniester_attached)
 
-SiniesterDetail
+        text += "Insert into AnexoSiniestro values({}, {}, {}, {}, {}, '{}') ;\n".format(siniester_attached.siniester_id,
+                                                                                       siniester_attached.policy_id,
+                                                                                       siniester_attached.ramo_id,
+                                                                                       siniester_attached.product_id,
+                                                                                       siniester_attached.id,
+                                                                                       siniester_attached.document)
+    save("./data/siniesters/anexo_siniestros.txt", text)  
+    
+    
+    
+    
+    return siniesters, siniester_details, siniester_attacheds

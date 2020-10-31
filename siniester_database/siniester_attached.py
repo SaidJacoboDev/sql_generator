@@ -6,7 +6,7 @@ class SiniesterAttached:
         self.policy_id=None
         self.ramo_id=None
         self.product_id=None
-        self.attach_id=None
+        self.id=None
         self.document=None
 
 
