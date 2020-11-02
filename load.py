@@ -15,6 +15,7 @@ from policy_database.receipt import Receipt
 from siniester_database.siniester import Siniester
 from siniester_database.siniester_detail import SiniesterDetail
 from siniester_database.siniester_attached import SiniesterAttached
+from siniester_database.siniester_type import SiniesterType
 
 random.seed(42)
 
@@ -205,7 +206,10 @@ def load_policy_database(ramo_range, product_range, policy_range, person_range, 
         certificate.product_id = policy.product_id
         certificate.ramo_id = policy.ramo_id
         
-        random_coverage = random.choice(coverages)
+
+        random_coverage = [cov for cov in coverages if certificate.product_id == cov.product_id and certificate.ramo_id == cov.ramo_id].pop()
+        #print(random_coverage.description)
+        #random_coverage = random.choice(coverages)
         certificate.coverage_id = random_coverage.id
 
         certificate.sum_assured = random.randint(5000, 20000)
@@ -288,6 +292,24 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
                                                                                              siniester.person_id)
     save("./data/siniesters/siniestros.txt", text)  
 
+    siniester_types = []
+    text = ''
+    n = -1
+    for t in range(0, 6):
+
+        n += 1
+        siniester_type = SiniesterType()
+
+        siniester_type.id = n
+        siniester_type.description = 'Tipo {}'.format(n)
+
+        siniester_types.append(siniester_type)
+
+        text += "Insert into TiposSiniestros values({},'{}') ;\n".format(siniester_type.id,
+                                                                         siniester_type.description)
+    save("./data/siniesters/tipos_siniestros.txt", text)  
+
+
     siniester_details = []
     text = ''
     for s in siniesters:
@@ -302,20 +324,26 @@ def load_siniester_database(siniester_range, policies, cities, persons, certific
         siniester_detail.policy_id = certificate.policy_id
         siniester_detail.ramo_id = certificate.ramo_id
         siniester_detail.product_id = certificate.product_id
+        siniester_detail.siniester_type_id = random.randint(0,5)
         
         siniester_detail.certify_id = certificate.id
-        siniester_detail.description = 'Descripcion del siniestro nro {}'.format(s.id)
-        siniester_detail.amount = random.randint(5000, 20000)
 
+        siniester_detail.description = 'Descripcion del siniestro nro {}'.format(s.id)
+        siniester_type = random.randint(0,10)
+        
+        
+        
+        siniester_detail.amount = random.randint(5000, 20000)
         siniester_details.append(siniester_detail)
 
-        text += "Insert into DetalleSiniestro values({}, {}, {}, {}, {}, '{}', {}) ;\n".format(siniester_detail.siniester_id,
+        text += "Insert into DetalleSiniestro values({}, {}, {}, {}, {}, '{}', {}, {}) ;\n".format(siniester_detail.siniester_id,
                                                                                               siniester_detail.policy_id,
                                                                                               siniester_detail.ramo_id,
                                                                                               siniester_detail.product_id,
                                                                                               siniester_detail.certify_id,
                                                                                               siniester_detail.description,
-                                                                                              siniester_detail.amount)
+                                                                                              siniester_detail.amount,
+                                                                                              siniester_detail.siniester_type_id)
     save("./data/siniesters/detalle_siniestros.txt", text)  
         
     siniester_attacheds = []

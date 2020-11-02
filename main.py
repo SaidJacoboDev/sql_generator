@@ -6,7 +6,7 @@ from load import load_siniester_database
 if __name__ == '__main__':
 
     person_range = 10000
-    producer_range = 250
+    producer_range = 100
     policy_range = 10000
     #----------------
     #   Person DB
@@ -19,7 +19,7 @@ if __name__ == '__main__':
                                                                                 producer_range=producer_range)
 
     #----------------
-    #   Policy DB
+    #   Policy DB 
     #----------------
 
     ramos, products, policies, certificates, coverages, receipts = load_policy_database(ramo_range=50, 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     #----------------
     #   Siniesters DB
     #----------------
-    siniesters = load_siniester_database(siniester_range=200, 
+    siniesters = load_siniester_database(siniester_range=500, 
                                          policies=policies, 
                                          cities=cities, 
                                          persons=persons,

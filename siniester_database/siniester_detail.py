@@ -6,6 +6,7 @@ class SiniesterDetail():
         self.ramo_id=None
         self.product_id=None
         self.certify_id=None
+        self.siniester_type_id=None
         
         self.description=None
         self.amount=None
